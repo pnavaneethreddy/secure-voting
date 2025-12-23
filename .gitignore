@@ -12,10 +12,10 @@ server/.env
 client/.env.local
 
 # Build outputs
-build/
+# build/ - commented out to allow client/build
 dist/
-*/build/
 */dist/
+# */build/ - commented out to allow client/build
 
 # Logs
 npm-debug.log*
