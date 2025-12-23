@@ -17,18 +17,36 @@ router.post('/', [
   body('otp').isLength({ min: 6, max: 6 })
 ], auth, async (req, res) => {
   try {
+    console.log(`🗳️ Vote casting request received from user: ${req.user.email}`);
+    console.log(`📋 Request data:`, { 
+      electionId: req.body.electionId, 
+      candidateId: req.body.candidateId, 
+      otp: req.body.otp?.length ? `${req.body.otp.length} chars` : 'missing'
+    });
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(`❌ Validation errors:`, errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { electionId, candidateId, otp } = req.body;
     
-    // Refresh user data from database to get latest OTP info
-    const user = await User.findById(req.user._id);
+    // Refresh user data from database to get latest OTP info with ObjectId handling
+    let user = await User.findById(req.user._id);
+    
     if (!user) {
+      // Try finding by string comparison if ObjectId fails
+      const allUsers = await User.find({});
+      user = allUsers.find(u => u._id.toString() === req.user._id.toString());
+    }
+    
+    if (!user) {
+      console.log(`❌ User not found: ${req.user._id}`);
       return res.status(401).json({ message: 'User not found' });
     }
+    
+    console.log(`✅ User found for vote casting: ${user.email}`);
 
     // Check if OTP was recently verified (within last 5 minutes)
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
@@ -55,11 +73,22 @@ router.post('/', [
       }
     }
 
-    // Get election
-    const election = await Election.findById(electionId);
+    // Get election with ObjectId handling
+    let election = await Election.findById(electionId);
+    
     if (!election) {
+      // Try finding by string comparison if ObjectId fails
+      const allElections = await Election.find({});
+      election = allElections.find(e => e._id.toString() === electionId);
+    }
+    
+    if (!election) {
+      console.log(`❌ Election not found: ${electionId}`);
       return res.status(404).json({ message: 'Election not found' });
     }
+    
+    console.log(`✅ Election found: "${election.title}"`);
+    console.log(`🗳️ Vote casting attempt by ${user.email} for election: ${election.title}`);
 
     // Check if election is active
     const now = new Date();
@@ -173,17 +202,59 @@ router.post('/', [
 // Get user's vote history (just elections they've voted in)
 router.get('/history', auth, async (req, res) => {
   try {
-    const voteRecords = await VoteRecord.find({ userId: req.user._id })
-      .populate('electionId', 'title description endDate')
+    console.log(`📊 Fetching vote history for user: ${req.user.email} (ID: ${req.user._id})`);
+    
+    // First try with ObjectId
+    let voteRecords = await VoteRecord.find({ userId: req.user._id })
       .sort({ votedAt: -1 });
+    
+    console.log(`📊 Found ${voteRecords.length} vote records with ObjectId query`);
+    
+    // If no records found, try with string comparison fallback
+    if (voteRecords.length === 0) {
+      console.log(`🔄 Trying fallback method for vote history...`);
+      
+      // Get all vote records and filter manually
+      const allVoteRecords = await VoteRecord.find({});
+      voteRecords = allVoteRecords.filter(record => 
+        record.userId.toString() === req.user._id.toString()
+      ).sort((a, b) => new Date(b.votedAt) - new Date(a.votedAt));
+      
+      console.log(`📊 Found ${voteRecords.length} vote records with fallback method`);
+    }
 
-    const history = voteRecords.map(record => ({
-      electionTitle: record.electionId.title,
-      electionDescription: record.electionId.description,
-      votedAt: record.votedAt,
-      electionEndDate: record.electionId.endDate
-    }));
+    // Manually populate election data to handle orphaned records
+    const history = [];
+    
+    for (const record of voteRecords) {
+      try {
+        // Try to find the election
+        let election = await Election.findById(record.electionId);
+        
+        if (!election) {
+          // Try fallback method
+          const allElections = await Election.find({});
+          election = allElections.find(e => e._id.toString() === record.electionId.toString());
+        }
+        
+        if (election) {
+          history.push({
+            electionTitle: election.title,
+            electionDescription: election.description,
+            votedAt: record.votedAt,
+            electionEndDate: election.endDate,
+            electionId: election._id
+          });
+          console.log(`✅ Added election "${election.title}" to history`);
+        } else {
+          console.log(`⚠️ Skipping orphaned vote record for election ID: ${record.electionId}`);
+        }
+      } catch (error) {
+        console.log(`❌ Error processing vote record: ${error.message}`);
+      }
+    }
 
+    console.log(`✅ Returning ${history.length} vote history records`);
     res.json(history);
   } catch (error) {
     console.error('Vote history error:', error);

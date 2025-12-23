@@ -15,13 +15,41 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [electionsRes, historyRes] = await Promise.all([
-        axios.get('/api/elections'),
-        axios.get('/api/votes/history')
-      ]);
+      // Try to get active elections first
+      let electionsData = [];
+      try {
+        const electionsRes = await axios.get('/api/elections');
+        electionsData = electionsRes.data;
+        console.log('Dashboard: Active elections loaded:', electionsData.length);
+      } catch (electionsError) {
+        console.log('Dashboard: Active elections failed, trying all elections...');
+        try {
+          // Fallback to all elections and filter active ones
+          const allElectionsRes = await axios.get('/api/elections/all');
+          const now = new Date();
+          electionsData = allElectionsRes.data.filter(election => {
+            const isActive = election.isCurrentlyActive === true || 
+                           (new Date(election.startDate) <= now && new Date(election.endDate) >= now);
+            return isActive;
+          });
+          console.log('Dashboard: Filtered active elections:', electionsData.length);
+        } catch (fallbackError) {
+          console.error('Dashboard: Both elections APIs failed:', fallbackError);
+        }
+      }
       
-      setElections(electionsRes.data);
-      setVoteHistory(historyRes.data);
+      // Get vote history
+      let historyData = [];
+      try {
+        const historyRes = await axios.get('/api/votes/history');
+        historyData = historyRes.data;
+        console.log('Dashboard: Vote history loaded:', historyData.length);
+      } catch (historyError) {
+        console.error('Dashboard: Vote history failed:', historyError);
+      }
+      
+      setElections(electionsData);
+      setVoteHistory(historyData);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -49,6 +77,53 @@ const Dashboard = () => {
           </p>
         </div>
 
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+                  <span className="text-green-600 font-semibold">🗳️</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Active Elections</p>
+                <p className="text-2xl font-semibold text-gray-900">{elections.length}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold">✅</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Your Votes</p>
+                <p className="text-2xl font-semibold text-gray-900">{voteHistory.length}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+                  <span className="text-yellow-600 font-semibold">⏳</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Pending Votes</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {elections.filter(e => !e.hasVoted).length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Active Elections */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
@@ -63,40 +138,84 @@ const Dashboard = () => {
               {elections.map((election) => (
                 <div
                   key={election._id}
-                  className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                  className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-green-500"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {election.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+                      {election.title}
+                    </h3>
+                    <div className="flex flex-col space-y-1 ml-2">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Active
+                      </span>
+                      {election.hasVoted && (
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          Voted
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
                     {election.description}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      election.hasVoted 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {election.hasVoted ? 'Voted' : 'Not Voted'}
-                    </span>
+                  
+                  <div className="space-y-2 text-xs text-gray-500 mb-4">
+                    <div className="flex justify-between">
+                      <span>Candidates:</span>
+                      <span>{election.candidates?.length || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Votes:</span>
+                      <span>{election.totalVotes || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ends:</span>
+                      <span>{new Date(election.endDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2">
                     {!election.hasVoted ? (
                       <Link
                         to={`/vote/${election._id}`}
-                        className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700"
+                        className="flex-1 bg-primary-600 text-white text-center px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
                       >
                         Vote Now
                       </Link>
                     ) : (
-                      <Link
-                        to={`/results/${election._id}`}
-                        className="bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                      >
-                        View Results
-                      </Link>
+                      <div className="flex-1 bg-gray-100 text-gray-500 text-center px-4 py-2 rounded-md text-sm font-medium">
+                        Already Voted
+                      </div>
                     )}
+                    
+                    <Link
+                      to={`/results/${election._id}`}
+                      className="flex-1 bg-gray-600 text-white text-center px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+                    >
+                      Results
+                    </Link>
                   </div>
-                  <div className="mt-4 text-xs text-gray-500">
-                    Ends: {new Date(election.endDate).toLocaleDateString()}
+                  
+                  {/* Time remaining indicator */}
+                  <div className="mt-4">
+                    <div className="w-full bg-gray-200 rounded-full h-1">
+                      <div
+                        className="bg-green-500 h-1 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${Math.max(0, Math.min(100, 
+                            ((new Date() - new Date(election.startDate)) / 
+                             (new Date(election.endDate) - new Date(election.startDate))) * 100
+                          ))}%`
+                        }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>Started: {new Date(election.startDate).toLocaleDateString()}</span>
+                      <span>
+                        {Math.ceil((new Date(election.endDate) - new Date()) / (1000 * 60 * 60 * 24))} days left
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

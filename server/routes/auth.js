@@ -100,9 +100,16 @@ router.post('/login', [
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    // Update last login using direct database update to avoid ObjectId issues
+    try {
+      await User.updateOne(
+        { email: email },
+        { $set: { lastLogin: new Date() } }
+      );
+      console.log('✅ Last login updated');
+    } catch (updateError) {
+      console.log('⚠️ Could not update last login, but continuing with login');
+    }
 
     const { accessToken, refreshToken } = generateTokens(user._id);
     console.log(`✅ Login successful for: ${email} (${user.role})`);

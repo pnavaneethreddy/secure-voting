@@ -53,10 +53,16 @@ const AdminDashboard = () => {
     }
   };
 
-  const deleteElection = async (electionId) => {
-    if (window.confirm('Are you sure you want to delete this election?')) {
+  const deleteElection = async (electionId, electionTitle, totalVotes) => {
+    const hasVotes = totalVotes > 0;
+    const confirmMessage = hasVotes 
+      ? `⚠️ WARNING: This will permanently delete "${electionTitle}" and ALL ${totalVotes} votes cast in this election.\n\nThis action cannot be undone. Are you absolutely sure?`
+      : `Are you sure you want to delete "${electionTitle}"?`;
+    
+    if (window.confirm(confirmMessage)) {
       try {
-        await axios.delete(`/api/admin/elections/${electionId}`);
+        const response = await axios.delete(`/api/admin/elections/${electionId}`);
+        alert(response.data.message); // Show success message
         fetchAdminData(); // Refresh data
       } catch (error) {
         console.error('Error deleting election:', error);
@@ -168,14 +174,17 @@ const AdminDashboard = () => {
                       >
                         View Results
                       </Link>
-                      {election.totalVotes === 0 && (
-                        <button
-                          onClick={() => deleteElection(election._id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
-                      )}
+                      <button
+                        onClick={() => deleteElection(election._id, election.title, election.totalVotes)}
+                        className={`${
+                          election.totalVotes > 0 
+                            ? 'text-red-700 hover:text-red-900 font-semibold' 
+                            : 'text-red-600 hover:text-red-900'
+                        }`}
+                        title={election.totalVotes > 0 ? `⚠️ Will delete ${election.totalVotes} votes` : 'Delete election'}
+                      >
+                        {election.totalVotes > 0 ? '⚠️ Force Delete' : 'Delete'}
+                      </button>
                     </td>
                   </tr>
                 ))}

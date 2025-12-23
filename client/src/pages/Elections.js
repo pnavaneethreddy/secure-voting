@@ -13,10 +13,58 @@ const Elections = () => {
 
   const fetchElections = async () => {
     try {
-      const res = await axios.get('/api/elections');
-      setElections(res.data);
+      // Get ALL elections (active, upcoming, and completed)
+      const res = await axios.get('/api/elections/all');
+      
+      // Sort elections: Active first, then Upcoming, then Completed
+      const sortedElections = res.data.sort((a, b) => {
+        const now = new Date();
+        const aStart = new Date(a.startDate);
+        const aEnd = new Date(a.endDate);
+        const bStart = new Date(b.startDate);
+        const bEnd = new Date(b.endDate);
+        
+        // Determine status for sorting
+        const getStatus = (election) => {
+          const start = new Date(election.startDate);
+          const end = new Date(election.endDate);
+          if (election.isCurrentlyActive === true || (start <= now && end >= now)) return 'active';
+          if (now < start) return 'upcoming';
+          return 'completed';
+        };
+        
+        const aStatus = getStatus(a);
+        const bStatus = getStatus(b);
+        
+        // Sort order: active (0), upcoming (1), completed (2)
+        const statusOrder = { active: 0, upcoming: 1, completed: 2 };
+        
+        if (statusOrder[aStatus] !== statusOrder[bStatus]) {
+          return statusOrder[aStatus] - statusOrder[bStatus];
+        }
+        
+        // Within same status, sort by date
+        if (aStatus === 'active' || aStatus === 'upcoming') {
+          return aStart - bStart; // Earlier start date first
+        } else {
+          return bEnd - aEnd; // More recent end date first for completed
+        }
+      });
+      
+      setElections(sortedElections);
+      setError('');
+      console.log('Elections: Loaded all elections:', sortedElections.length);
     } catch (error) {
-      setError('Failed to fetch elections');
+      console.log('All elections failed, trying active elections fallback...');
+      try {
+        // Fallback to active elections only if all elections fail
+        const res = await axios.get('/api/elections');
+        setElections(res.data);
+        setError('Showing active elections only due to connection issues');
+      } catch (fallbackError) {
+        console.error('Both elections APIs failed:', fallbackError);
+        setError('Failed to fetch elections');
+      }
     } finally {
       setLoading(false);
     }
@@ -36,7 +84,7 @@ const Elections = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">All Elections</h1>
           <p className="mt-2 text-gray-600">
-            View and participate in active elections
+            View all elections - active, upcoming, and completed
           </p>
         </div>
 
@@ -50,10 +98,10 @@ const Elections = () => {
           <div className="bg-white rounded-lg shadow p-8 text-center">
             <div className="text-gray-400 text-6xl mb-4">🗳️</div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No Active Elections
+              No Elections Found
             </h3>
             <p className="text-gray-500">
-              There are no elections available at the moment. Check back later!
+              There are no elections in the system yet. Check back later!
             </p>
           </div>
         ) : (
@@ -68,13 +116,33 @@ const Elections = () => {
                     <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
                       {election.title}
                     </h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ml-2 ${
-                      election.hasVoted 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {election.hasVoted ? 'Voted' : 'Available'}
-                    </span>
+                    <div className="flex flex-col space-y-1 ml-2">
+                      {/* Election Status Badge */}
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        election.isCurrentlyActive === true
+                          ? 'bg-green-100 text-green-800' 
+                          : new Date() > new Date(election.endDate)
+                          ? 'bg-gray-100 text-gray-800'
+                          : new Date() < new Date(election.startDate)
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-green-100 text-green-800' // Default to active if dates suggest it should be
+                      }`}>
+                        {election.isCurrentlyActive === true
+                          ? 'Active' 
+                          : new Date() > new Date(election.endDate)
+                          ? 'Completed'
+                          : new Date() < new Date(election.startDate)
+                          ? 'Upcoming'
+                          : 'Active' // Default to active if within date range
+                        }
+                      </span>
+                      {/* Vote Status Badge */}
+                      {election.hasVoted && (
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          Voted
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -97,16 +165,29 @@ const Elections = () => {
                   </div>
 
                   <div className="flex space-x-2">
-                    {!election.hasVoted ? (
+                    {/* Check if election is currently active based on dates and status */}
+                    {((election.isCurrentlyActive === true) || 
+                      (election.isCurrentlyActive === undefined && 
+                       new Date() >= new Date(election.startDate) && 
+                       new Date() <= new Date(election.endDate))) && 
+                     !election.hasVoted ? (
                       <Link
                         to={`/vote/${election._id}`}
                         className="flex-1 bg-primary-600 text-white text-center px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
                       >
                         Vote Now
                       </Link>
-                    ) : (
+                    ) : election.hasVoted ? (
                       <div className="flex-1 bg-gray-100 text-gray-500 text-center px-4 py-2 rounded-md text-sm font-medium">
                         Already Voted
+                      </div>
+                    ) : new Date() > new Date(election.endDate) ? (
+                      <div className="flex-1 bg-gray-100 text-gray-500 text-center px-4 py-2 rounded-md text-sm font-medium">
+                        Election Ended
+                      </div>
+                    ) : (
+                      <div className="flex-1 bg-yellow-100 text-yellow-700 text-center px-4 py-2 rounded-md text-sm font-medium">
+                        Not Started
                       </div>
                     )}
                     

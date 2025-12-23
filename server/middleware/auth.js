@@ -10,9 +10,18 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
+    
+    // Try to find user with multiple methods to handle ObjectId issues
+    let user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      // Try finding by string comparison if ObjectId fails
+      const allUsers = await User.find({}).select('-password');
+      user = allUsers.find(u => u._id.toString() === decoded.userId);
+    }
     
     if (!user || !user.isActive) {
+      console.log(`❌ User not found or inactive for token: ${decoded.userId}`);
       return res.status(401).json({ message: 'Token is not valid' });
     }
 

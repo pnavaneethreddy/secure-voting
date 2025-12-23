@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
         type: 'LOGIN_SUCCESS',
         payload: {
           user: res.data.user,
-          token: res.data.accessToken
+          token: res.data.accessToken  // Use accessToken from response
         }
       });
       return { success: true };
@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }) => {
         type: 'LOGIN_SUCCESS',
         payload: {
           user: res.data.user,
-          token: res.data.accessToken
+          token: res.data.accessToken  // Use accessToken from response
         }
       });
       return { success: true };

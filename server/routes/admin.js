@@ -77,30 +77,62 @@ router.put('/elections/:id', [
   body('endDate').optional().isISO8601()
 ], adminAuth, async (req, res) => {
   try {
+    console.log(`📝 Update election request for ID: ${req.params.id}`);
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const election = await Election.findById(req.params.id);
+    // Find election with ObjectId handling
+    let election = await Election.findById(req.params.id);
+    
     if (!election) {
+      // Try finding by string comparison if ObjectId fails
+      const allElections = await Election.find({});
+      election = allElections.find(e => e._id.toString() === req.params.id);
+    }
+    
+    if (!election) {
+      console.log(`❌ Election not found for update: ${req.params.id}`);
       return res.status(404).json({ message: 'Election not found' });
     }
 
+    console.log(`✅ Election found for update: "${election.title}"`);
+
     // Don't allow updates if voting has started
     if (election.totalVotes > 0) {
+      console.log(`❌ Cannot update election with votes: ${election.totalVotes} votes cast`);
       return res.status(400).json({ 
         message: 'Cannot update election after voting has started' 
       });
     }
 
-    Object.assign(election, req.body);
-    await election.save();
-
-    res.json({
-      message: 'Election updated successfully',
-      election
-    });
+    // Update using Mongoose updateOne method
+    const updateData = { ...req.body };
+    
+    // Convert date strings to Date objects if present
+    if (updateData.startDate) updateData.startDate = new Date(updateData.startDate);
+    if (updateData.endDate) updateData.endDate = new Date(updateData.endDate);
+    
+    const updateResult = await Election.updateOne(
+      { _id: election._id },
+      { $set: updateData }
+    );
+    
+    if (updateResult.modifiedCount === 1) {
+      // Fetch updated election
+      const updatedElection = await Election.findById(election._id);
+      console.log(`✅ Election "${election.title}" updated successfully`);
+      
+      res.json({
+        message: 'Election updated successfully',
+        election: updatedElection
+      });
+    } else {
+      console.log(`❌ Failed to update election: ${req.params.id}, updateResult:`, updateResult);
+      res.status(500).json({ message: 'Failed to update election' });
+    }
   } catch (error) {
     console.error('Update election error:', error);
     res.status(500).json({ message: 'Server error updating election' });
@@ -110,21 +142,63 @@ router.put('/elections/:id', [
 // Delete election
 router.delete('/elections/:id', adminAuth, async (req, res) => {
   try {
-    const election = await Election.findById(req.params.id);
+    console.log(`🗑️ Delete election request for ID: ${req.params.id}`);
+    
+    // Get raw election data from database to handle mixed ObjectId types
+    const db = require('mongoose').connection.db;
+    const rawElections = await db.collection('elections').find({}).toArray();
+    
+    // Find election by matching string representation of ID
+    const election = rawElections.find(e => e._id.toString() === req.params.id);
+    
     if (!election) {
+      console.log(`❌ Election not found for deletion: ${req.params.id}`);
       return res.status(404).json({ message: 'Election not found' });
     }
 
-    // Don't allow deletion if voting has started
+    console.log(`✅ Election found for deletion: "${election.title}"`);
+    console.log(`   ID: ${election._id} (Type: ${typeof election._id})`);
+    console.log(`   Votes: ${election.totalVotes}`);
+
+    // Admin can delete elections even with votes, but we'll clean up related data
     if (election.totalVotes > 0) {
-      return res.status(400).json({ 
-        message: 'Cannot delete election after voting has started' 
-      });
+      console.log(`⚠️ Admin deleting election with ${election.totalVotes} votes - cleaning up related data`);
+      
+      // Delete related votes and vote records
+      try {
+        const voteDeleteResult = await db.collection('votes').deleteMany({ 
+          electionId: election._id 
+        });
+        console.log(`🧹 Deleted ${voteDeleteResult.deletedCount} votes`);
+        
+        const voteRecordDeleteResult = await db.collection('voterecords').deleteMany({ 
+          electionId: election._id 
+        });
+        console.log(`🧹 Deleted ${voteRecordDeleteResult.deletedCount} vote records`);
+      } catch (cleanupError) {
+        console.error('⚠️ Error cleaning up votes:', cleanupError);
+        // Continue with election deletion even if cleanup fails
+      }
     }
 
-    await Election.findByIdAndDelete(req.params.id);
-
-    res.json({ message: 'Election deleted successfully' });
+    // Delete the election
+    const deleteResult = await db.collection('elections').deleteOne({ 
+      _id: election._id 
+    });
+    
+    console.log(`🧪 Delete operation result:`, deleteResult);
+    
+    if (deleteResult.deletedCount === 1) {
+      console.log(`✅ Election "${election.title}" deleted successfully`);
+      res.json({ 
+        message: election.totalVotes > 0 
+          ? `Election deleted successfully. ${election.totalVotes} votes were also removed.`
+          : 'Election deleted successfully'
+      });
+    } else {
+      console.log(`❌ Failed to delete election: ${req.params.id}`);
+      res.status(500).json({ message: 'Failed to delete election' });
+    }
   } catch (error) {
     console.error('Delete election error:', error);
     res.status(500).json({ message: 'Server error deleting election' });
@@ -134,10 +208,23 @@ router.delete('/elections/:id', adminAuth, async (req, res) => {
 // Get election analytics
 router.get('/elections/:id/analytics', adminAuth, async (req, res) => {
   try {
-    const election = await Election.findById(req.params.id);
+    console.log(`📊 Analytics request for election ID: ${req.params.id}`);
+    
+    // Find election with ObjectId handling
+    let election = await Election.findById(req.params.id);
+    
     if (!election) {
+      // Try finding by string comparison if ObjectId fails
+      const allElections = await Election.find({});
+      election = allElections.find(e => e._id.toString() === req.params.id);
+    }
+    
+    if (!election) {
+      console.log(`❌ Election not found for analytics: ${req.params.id}`);
       return res.status(404).json({ message: 'Election not found' });
     }
+
+    console.log(`✅ Election found for analytics: "${election.title}"`);
 
     // Get vote distribution by time
     const votes = await Vote.find({ electionId: election._id })
@@ -170,6 +257,7 @@ router.get('/elections/:id/analytics', adminAuth, async (req, res) => {
       }))
     };
 
+    console.log(`📊 Analytics generated for "${election.title}": ${election.totalVotes} total votes`);
     res.json(analytics);
   } catch (error) {
     console.error('Get analytics error:', error);
