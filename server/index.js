@@ -54,20 +54,27 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    vercel: process.env.VERCEL ? 'true' : 'false'
   });
 });
 
 // Simple test endpoint
-app.get('/test', (req, res) => {
+app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working!' });
 });
 
-// API-only mode - don't serve static files
-app.get('*', (req, res) => {
+// Root endpoint for testing
+app.get('/test', (req, res) => {
+  res.json({ message: 'Root server endpoint working!' });
+});
+
+// API-only mode - don't serve static files (Vercel handles them)
+app.get('/api/*', (req, res) => {
   res.status(404).json({ 
     message: 'API endpoint not found',
-    availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/test']
+    path: req.path,
+    availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/api/test']
   });
 });
 
