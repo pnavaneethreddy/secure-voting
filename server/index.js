@@ -48,6 +48,19 @@ app.use('/api/votes', voteRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/debug', debugRoutes);
 
+// Serve static files from React build in production
+if (process.env.NODE_ENV === 'production') {
+  const path = require('path');
+  
+  // Serve static files from client build
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  
+  // Handle React routing - send all non-API requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
