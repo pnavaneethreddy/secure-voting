@@ -8,11 +8,10 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
     "start": "cd server && npm start",
-    "seed": "cd server && npm run seed",
-    "vercel-build": "cd client && npm install && npm run build"
+    "seed": "cd server && npm run seed"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
