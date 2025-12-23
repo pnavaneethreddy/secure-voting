@@ -1,0 +1,552 @@
+{
+  "users": [
+    {
+      "otpVerified": false,
+      "_id": "694948f45f212eae23e4d627",
+      "email": "chinnugdpl@gmail.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "studentId": "STU001",
+      "role": "voter",
+      "isVerified": true,
+      "isActive": true,
+      "createdAt": "2025-12-22T13:34:44.990Z",
+      "updatedAt": "2025-12-22T13:34:44.990Z",
+      "__v": 0
+    },
+    {
+      "_id": "694948f55f212eae23e4d629",
+      "email": "john.doe@university.edu",
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "studentId": "STU002",
+      "role": "voter",
+      "isVerified": true,
+      "isActive": false,
+      "createdAt": "2025-12-22T13:34:45.644Z",
+      "updatedAt": "2025-12-22T15:43:51.909Z",
+      "__v": 0,
+      "otpVerified": false
+    },
+    {
+      "_id": "694948f75f212eae23e4d62f",
+      "email": "david.brown@university.edu",
+      "firstName": "David",
+      "lastName": "Brown",
+      "studentId": "STU005",
+      "role": "voter",
+      "isVerified": true,
+      "isActive": true,
+      "createdAt": "2025-12-22T13:34:47.599Z",
+      "updatedAt": "2025-12-22T15:43:38.087Z",
+      "__v": 0,
+      "otpVerified": false
+    },
+    {
+      "_id": "694949867db6cdf99dc5a777",
+      "email": "23b81a62f2@cvr.ac.in",
+      "firstName": "Navaneeth",
+      "lastName": "Reddy",
+      "studentId": "23B81A62F2",
+      "role": "voter",
+      "isVerified": false,
+      "isActive": true,
+      "createdAt": "2025-12-22T13:37:10.441Z",
+      "updatedAt": "2025-12-22T15:58:50.553Z",
+      "__v": 0,
+      "otpVerified": false,
+      "lastLogin": "2025-12-22T15:58:50.551Z"
+    },
+    {
+      "_id": "69495d09dde9e5c17834f880",
+      "email": "saralagdpl@gmail.com",
+      "firstName": "nav",
+      "lastName": "r",
+      "studentId": "23b81a62f2",
+      "role": "voter",
+      "isVerified": false,
+      "otpVerified": false,
+      "isActive": true,
+      "createdAt": "2025-12-22T15:00:25.834Z",
+      "updatedAt": "2025-12-22T15:59:30.659Z",
+      "__v": 0,
+      "lastLogin": "2025-12-22T15:59:03.486Z"
+    },
+    {
+      "_id": "694966b97df3a0b6d0218e06",
+      "email": "admin@votingsystem.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "studentId": "ADMIN001",
+      "role": "admin",
+      "isVerified": true,
+      "otpVerified": false,
+      "isActive": true,
+      "createdAt": "2025-12-22T15:41:45.808Z",
+      "updatedAt": "2025-12-22T16:21:45.608Z",
+      "__v": 0,
+      "lastLogin": "2025-12-22T16:21:45.607Z"
+    },
+    {
+      "_id": "69496e9462cef9d1adee8b3e",
+      "email": "23b81a62c9@cvr.ac.in",
+      "firstName": "akhil",
+      "lastName": "nayak",
+      "studentId": "23B81A62C9",
+      "role": "voter",
+      "isVerified": false,
+      "otpVerified": false,
+      "isActive": true,
+      "createdAt": "2025-12-22T16:15:16.681Z",
+      "updatedAt": "2025-12-22T16:21:15.484Z",
+      "__v": 0,
+      "lastLogin": "2025-12-22T16:20:10.481Z"
+    },
+    {
+      "_id": "69497062a43ba80b278ef32d",
+      "email": "akhilnayak509321@gmail.com",
+      "firstName": "akhil",
+      "lastName": "nayak",
+      "studentId": "23b81a62c99",
+      "role": "voter",
+      "isVerified": false,
+      "otpVerified": false,
+      "isActive": true,
+      "createdAt": "2025-12-22T16:22:58.522Z",
+      "updatedAt": "2025-12-22T16:24:28.866Z",
+      "__v": 0,
+      "lastLogin": "2025-12-22T16:23:57.704Z"
+    }
+  ],
+  "elections": [
+    {
+      "_id": "694948f75f212eae23e4d631",
+      "title": "Student Council President Election 2024",
+      "description": "Annual election for Student Council President. The president will represent all students and lead various campus initiatives for the academic year 2024-2025.",
+      "startDate": "2025-12-22T11:34:47.911Z",
+      "endDate": "2025-12-23T13:34:47.911Z",
+      "candidates": [
+        {
+          "name": "Alex Rodriguez",
+          "description": "Computer Science major with 3 years of student government experience. Focused on improving campus technology and student services.",
+          "voteCount": 2,
+          "_id": "694948f75f212eae23e4d632"
+        },
+        {
+          "name": "Emily Chen",
+          "description": "Business Administration student and current Vice President. Committed to enhancing student life and academic support programs.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d633"
+        },
+        {
+          "name": "Marcus Thompson",
+          "description": "Engineering student passionate about sustainability and campus infrastructure improvements.",
+          "voteCount": 1,
+          "_id": "694948f75f212eae23e4d634"
+        }
+      ],
+      "status": "active",
+      "createdBy": "694948f45f212eae23e4d625",
+      "eligibleVoters": [],
+      "totalVotes": 3,
+      "isPublic": true,
+      "allowedDomains": [],
+      "maxVotesPerUser": 1,
+      "createdAt": "2025-12-22T13:34:47.920Z",
+      "updatedAt": "2025-12-22T15:46:45.637Z",
+      "__v": 0
+    },
+    {
+      "_id": "694948f75f212eae23e4d636",
+      "title": "Senior Class Representative Election",
+      "description": "Election for Senior Class Representative who will coordinate graduation activities and serve as liaison between students and administration.",
+      "startDate": "2025-12-22T12:34:47.911Z",
+      "endDate": "2025-12-25T13:34:47.911Z",
+      "candidates": [
+        {
+          "name": "Jessica Park",
+          "description": "Psychology major with strong organizational skills and event planning experience.",
+          "voteCount": 1,
+          "_id": "694948f75f212eae23e4d637"
+        },
+        {
+          "name": "Ryan Mitchell",
+          "description": "Communications student and former class treasurer. Experienced in student advocacy.",
+          "voteCount": 2,
+          "_id": "694948f75f212eae23e4d638"
+        }
+      ],
+      "status": "active",
+      "createdBy": "694948f45f212eae23e4d625",
+      "eligibleVoters": [],
+      "totalVotes": 3,
+      "isPublic": true,
+      "allowedDomains": [],
+      "maxVotesPerUser": 1,
+      "createdAt": "2025-12-22T13:34:47.924Z",
+      "updatedAt": "2025-12-22T15:47:16.370Z",
+      "__v": 0
+    },
+    {
+      "_id": "694948f75f212eae23e4d63a",
+      "title": "Student Activities Board Election",
+      "description": "Choose the next Student Activities Board members who will organize campus events, concerts, and social activities throughout the year.",
+      "startDate": "2025-12-23T13:34:47.911Z",
+      "endDate": "2025-12-29T13:34:47.911Z",
+      "candidates": [
+        {
+          "name": "Sophia Martinez",
+          "description": "Art major with extensive event planning experience and creative vision for campus activities.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d63b"
+        },
+        {
+          "name": "James Wilson",
+          "description": "Music student and current Activities Board member. Passionate about bringing diverse entertainment to campus.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d63c"
+        },
+        {
+          "name": "Olivia Taylor",
+          "description": "Marketing major with social media expertise and fresh ideas for student engagement.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d63d"
+        },
+        {
+          "name": "Daniel Kim",
+          "description": "Sports Management student focused on recreational activities and intramural sports programs.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d63e"
+        }
+      ],
+      "status": "active",
+      "createdBy": "694948f45f212eae23e4d625",
+      "eligibleVoters": [],
+      "totalVotes": 0,
+      "isPublic": true,
+      "allowedDomains": [],
+      "maxVotesPerUser": 1,
+      "createdAt": "2025-12-22T13:34:47.929Z",
+      "updatedAt": "2025-12-22T13:34:47.929Z",
+      "__v": 0
+    },
+    {
+      "_id": "694948f75f212eae23e4d640",
+      "title": "Dormitory Council Election",
+      "description": "Election for Dormitory Council representatives who will address housing concerns and organize residence hall activities.",
+      "startDate": "2025-12-29T13:34:47.911Z",
+      "endDate": "2026-01-03T13:34:47.911Z",
+      "candidates": [
+        {
+          "name": "Ashley Johnson",
+          "description": "Resident Assistant with deep understanding of dormitory life and student needs.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d641"
+        },
+        {
+          "name": "Tyler Davis",
+          "description": "Sophomore student committed to improving dormitory facilities and community building.",
+          "voteCount": 0,
+          "_id": "694948f75f212eae23e4d642"
+        }
+      ],
+      "status": "draft",
+      "createdBy": "694948f45f212eae23e4d625",
+      "eligibleVoters": [],
+      "totalVotes": 0,
+      "isPublic": true,
+      "allowedDomains": [],
+      "maxVotesPerUser": 1,
+      "createdAt": "2025-12-22T13:34:47.934Z",
+      "updatedAt": "2025-12-22T13:34:47.934Z",
+      "__v": 0
+    },
+    {
+      "_id": "694967a958420f07ad0bf4cc",
+      "title": "School Pupil leader",
+      "description": "select spl",
+      "startDate": "2025-12-22T15:44:00.000Z",
+      "endDate": "2025-12-22T16:44:00.000Z",
+      "candidates": [
+        {
+          "name": "Navaneeth",
+          "description": "good at programming",
+          "imageUrl": "",
+          "voteCount": 2,
+          "_id": "694967a958420f07ad0bf4cd"
+        },
+        {
+          "name": "Akhil",
+          "description": "good at projects developing",
+          "imageUrl": "",
+          "voteCount": 3,
+          "_id": "694967a958420f07ad0bf4ce"
+        },
+        {
+          "name": "Keshav",
+          "description": "Good at web dev",
+          "imageUrl": "",
+          "voteCount": 0,
+          "_id": "694967a958420f07ad0bf4cf"
+        }
+      ],
+      "status": "active",
+      "createdBy": "694966b97df3a0b6d0218e06",
+      "eligibleVoters": [],
+      "totalVotes": 5,
+      "isPublic": true,
+      "allowedDomains": [],
+      "maxVotesPerUser": 1,
+      "createdAt": "2025-12-22T15:45:45.337Z",
+      "updatedAt": "2025-12-22T16:24:28.854Z",
+      "__v": 0
+    }
+  ],
+  "votes": [
+    {
+      "_id": "69495b6d6dca0e216e1eeeb4",
+      "electionId": "694948f75f212eae23e4d631",
+      "voterHash": "b26b7d5fc076c2fd47c22ef89a91b2e5bd672c4fbee61ebdb34eef8a29005aff",
+      "encryptedVote": "e5209218ba12efd7c6cea142febdf295:d13b0725ca1b55502ad64c346bc8dd5b3a7faf15280a2e1bfb96e31ed2a99a16",
+      "verificationHash": "5f835440bd45087f38c0746c6d49a92eabc13a9e3d79ed32f2420ab5fd2f9590",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T14:53:33.329Z",
+      "createdAt": "2025-12-22T14:53:33.335Z",
+      "updatedAt": "2025-12-22T14:53:33.335Z",
+      "__v": 0
+    },
+    {
+      "_id": "69495bbb6dca0e216e1eeef9",
+      "electionId": "694948f75f212eae23e4d636",
+      "voterHash": "577fd7258c15580968eb102a6c6838e4ad50cb5722ee13d061688c1f3a380c02",
+      "encryptedVote": "b348dd5d51293613b5d3ddf5b13691b4:e346c3a94f4d217089294d8c28daaf06d62e6deefe4062d9c20ddb68a39c640e",
+      "verificationHash": "8e8e7800168c9bedcc047a80d4aa28c71040362ed55a3001bf7b393d325176e6",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T14:54:51.071Z",
+      "createdAt": "2025-12-22T14:54:51.071Z",
+      "updatedAt": "2025-12-22T14:54:51.071Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949641598ed7d65e69890be",
+      "electionId": "694948f75f212eae23e4d631",
+      "voterHash": "eece2a2e6167797739a78df389f4ae2fe3766566c339163b380d170aa7d9cf5c",
+      "encryptedVote": "69feac8347010fed9c0f8cf24c94ede1:c86cd75169212b508b6dc11e229a8f2d74dcfea98fd14830f3d533f4001b1e0a",
+      "verificationHash": "d667ebb85b3fb1b06c143f8f0cc01d648cdbbb334e330621b4c1901185de83f7",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:30:29.997Z",
+      "createdAt": "2025-12-22T15:30:29.998Z",
+      "updatedAt": "2025-12-22T15:30:29.998Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496505a88098ec666ea7cf",
+      "electionId": "694948f75f212eae23e4d636",
+      "voterHash": "61b648bfa4ae102990e526f1135071cb44241885810b6c660166f3e300803f83",
+      "encryptedVote": "f837aa6ee12cab24398d886c2efb1fed:c43c873f6926672db889c2c9adcdf7fc482783f05135299c613844152c065869",
+      "verificationHash": "a1047d79da187a8fb3b80875ccabd7c1c3a6fd17060b1cafb333defd605eab81",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:34:29.058Z",
+      "createdAt": "2025-12-22T15:34:29.059Z",
+      "updatedAt": "2025-12-22T15:34:29.059Z",
+      "__v": 0
+    },
+    {
+      "_id": "694967e558420f07ad0bf532",
+      "electionId": "694948f75f212eae23e4d631",
+      "voterHash": "2eba8446829c4fddc893b0e9a87ff7be497e6700a59b2acfad4c93a3af3ba2cc",
+      "encryptedVote": "ae4c74526077c538323fd8bf80e70a17:95f9f57553b9499cb1d667db7d832fe9fa13cec02a0eb91382463f35a7f4272c",
+      "verificationHash": "67d68111d777f0dad6651f3f620b09aacdbe9c688ed7e47af2db3392167c5d0f",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:46:45.622Z",
+      "createdAt": "2025-12-22T15:46:45.623Z",
+      "updatedAt": "2025-12-22T15:46:45.623Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949680458420f07ad0bf574",
+      "electionId": "694948f75f212eae23e4d636",
+      "voterHash": "95dcb4628cb38831db20da30f0aed01bf9ff0954902a2602cba779aff9444ca0",
+      "encryptedVote": "3d5fca5859e7993787ebc6554412bcd3:23e9599bdeb0349efadd952622db98a3bfdcc5534bca3b204951d1c921f46ca2",
+      "verificationHash": "fd7c0e0443d20f3890fdbc98e45cbba1f07ac76199503a9c1b60118d77074b51",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:47:16.359Z",
+      "createdAt": "2025-12-22T15:47:16.360Z",
+      "updatedAt": "2025-12-22T15:47:16.360Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949691c489407eb9f6e78bd",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "voterHash": "986d4a9589d71df3fc8e870353404a8cd417093584f3ed5424fb664839f7203c",
+      "encryptedVote": "fc0999970e27d940f1bb142d8b488810:dd4b5928c47784c9ce641a9ab7d1a48cf075967a1ad29a8d81500b83037bab6c",
+      "verificationHash": "589f95bd1bab5f0ae468483b6f8ddd8067b8d1b17e0ecfef9689c850ad839548",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:51:56.242Z",
+      "createdAt": "2025-12-22T15:51:56.243Z",
+      "updatedAt": "2025-12-22T15:51:56.243Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496979489407eb9f6e7943",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "voterHash": "15ecc8cf632f22cfeaf64f361c5250eec9fd15c414c0f9dce9927e9515cf4845",
+      "encryptedVote": "82da7064aadfc6ebdd576540c88c568d:631d6b0a76e870229773a57968d520930c7644a8ae6d7480f8faeb7b4299c6db",
+      "verificationHash": "2aa0b6909d2e5781cb858880c21d6035f79af18fc0a17fb5194ec6de31f9b217",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:53:29.937Z",
+      "createdAt": "2025-12-22T15:53:29.938Z",
+      "updatedAt": "2025-12-22T15:53:29.938Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496ae2294d09ee16ef5fd8",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "voterHash": "5fb00f9af1ad6680e2f989cb184bb3c0a4a18e80c828e46f35234e913b03b277",
+      "encryptedVote": "ff18c4e7bf3e8d18b1fb6cd4c6627da1:238c556d6da70c8c3f2af29081f7284a79937961d344612a42450989755b6bd2",
+      "verificationHash": "89ff4a9b083c23c5d9389bae16e7408d001d712b8b64cc379e1570015466ff21",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T15:59:30.640Z",
+      "createdAt": "2025-12-22T15:59:30.641Z",
+      "updatedAt": "2025-12-22T15:59:30.641Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496ffba43ba80b278ef2cb",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "voterHash": "feaeee1b890a13bd96b3c09fed152df95dba4cbae60bf35ce179fdb043956a41",
+      "encryptedVote": "e91e84cc1f8d0a417ef9c89c1b05a5ad:fb34eeeb524a2c9c3bbcafe0cf33982e2d103e8457ad12e984a18fd5f82d41d2",
+      "verificationHash": "c609766486d37ef13f2ba9c36eae6d5980113c9501016b59a8c3d9205c275547",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T16:21:15.450Z",
+      "createdAt": "2025-12-22T16:21:15.452Z",
+      "updatedAt": "2025-12-22T16:21:15.452Z",
+      "__v": 0
+    },
+    {
+      "_id": "694970bcc5aeaefea67882fd",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "voterHash": "a07ce217510cfea72f7b6f23e687a808f1788d461516016bcc6973bda2595f41",
+      "encryptedVote": "0c838475d55cfbee72fec1af4909aefb:315bbddc88bfa3ed71344a11e995b31e10f41da6391623737729be948a773368",
+      "verificationHash": "b44f9a4c3cd1ef11388deed5b7e13b647c4a5a7a02971426e3b2ac22a5c1206c",
+      "ipAddress": "::1",
+      "timestamp": "2025-12-22T16:24:28.825Z",
+      "createdAt": "2025-12-22T16:24:28.827Z",
+      "updatedAt": "2025-12-22T16:24:28.827Z",
+      "__v": 0
+    }
+  ],
+  "voteRecords": [
+    {
+      "_id": "69495b6d6dca0e216e1eeeb6",
+      "userId": "694949867db6cdf99dc5a777",
+      "electionId": "694948f75f212eae23e4d631",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T14:53:33.344Z",
+      "createdAt": "2025-12-22T14:53:33.345Z",
+      "updatedAt": "2025-12-22T14:53:33.345Z",
+      "__v": 0
+    },
+    {
+      "_id": "69495bbb6dca0e216e1eeefb",
+      "userId": "694949867db6cdf99dc5a777",
+      "electionId": "694948f75f212eae23e4d636",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T14:54:51.074Z",
+      "createdAt": "2025-12-22T14:54:51.075Z",
+      "updatedAt": "2025-12-22T14:54:51.075Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949641698ed7d65e69890c0",
+      "userId": "69495d09dde9e5c17834f880",
+      "electionId": "694948f75f212eae23e4d631",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:30:30.002Z",
+      "createdAt": "2025-12-22T15:30:30.002Z",
+      "updatedAt": "2025-12-22T15:30:30.002Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496505a88098ec666ea7d1",
+      "userId": "69495d09dde9e5c17834f880",
+      "electionId": "694948f75f212eae23e4d636",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:34:29.064Z",
+      "createdAt": "2025-12-22T15:34:29.065Z",
+      "updatedAt": "2025-12-22T15:34:29.065Z",
+      "__v": 0
+    },
+    {
+      "_id": "694967e558420f07ad0bf534",
+      "userId": "694966b97df3a0b6d0218e06",
+      "electionId": "694948f75f212eae23e4d631",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:46:45.627Z",
+      "createdAt": "2025-12-22T15:46:45.629Z",
+      "updatedAt": "2025-12-22T15:46:45.629Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949680458420f07ad0bf576",
+      "userId": "694966b97df3a0b6d0218e06",
+      "electionId": "694948f75f212eae23e4d636",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:47:16.363Z",
+      "createdAt": "2025-12-22T15:47:16.364Z",
+      "updatedAt": "2025-12-22T15:47:16.364Z",
+      "__v": 0
+    },
+    {
+      "_id": "6949691c489407eb9f6e78bf",
+      "userId": "694966b97df3a0b6d0218e06",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:51:56.255Z",
+      "createdAt": "2025-12-22T15:51:56.257Z",
+      "updatedAt": "2025-12-22T15:51:56.257Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496979489407eb9f6e7945",
+      "userId": "694949867db6cdf99dc5a777",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:53:29.941Z",
+      "createdAt": "2025-12-22T15:53:29.941Z",
+      "updatedAt": "2025-12-22T15:53:29.941Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496ae2294d09ee16ef5fda",
+      "userId": "69495d09dde9e5c17834f880",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T15:59:30.645Z",
+      "createdAt": "2025-12-22T15:59:30.646Z",
+      "updatedAt": "2025-12-22T15:59:30.646Z",
+      "__v": 0
+    },
+    {
+      "_id": "69496ffba43ba80b278ef2cd",
+      "userId": "69496e9462cef9d1adee8b3e",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T16:21:15.463Z",
+      "createdAt": "2025-12-22T16:21:15.465Z",
+      "updatedAt": "2025-12-22T16:21:15.465Z",
+      "__v": 0
+    },
+    {
+      "_id": "694970bcc5aeaefea67882ff",
+      "userId": "69497062a43ba80b278ef32d",
+      "electionId": "694967a958420f07ad0bf4cc",
+      "hasVoted": true,
+      "votedAt": "2025-12-22T16:24:28.837Z",
+      "createdAt": "2025-12-22T16:24:28.839Z",
+      "updatedAt": "2025-12-22T16:24:28.839Z",
+      "__v": 0
+    }
+  ],
+  "exportDate": "2025-12-23T12:48:09.951Z"
+}
