@@ -1,0 +1,9 @@
+MONGODB_URI=mongodb+srv://votingadmin:Chinnu%402006pnr@votingcluster.cujzama.mongodb.net/voting_system?retryWrites=true&w=majority
+JWT_SECRET=d3468a371fe331da07328a04a5cf3d22ba04c8cc97141a7c42a3d8b10c4cf5aa
+JWT_REFRESH_SECRET=8871764f7864f3c5882b3e1cdd2d4eecd83718673c6720175da0c1bcbb76c7e4
+ENCRYPTION_KEY=ca2744d18c3b2337c8a621b65a97567c
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=chinnugdpl@gmail.com
+EMAIL_PASS=crhw cpuo rjme pdfc
+NODE_ENV=production

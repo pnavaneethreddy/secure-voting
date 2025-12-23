@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
-const User = require('./models/User');
-const Election = require('./models/Election');
-const Vote = require('./models/Vote');
-const VoteRecord = require('./models/VoteRecord');
 require('dotenv').config();
 
 const importData = async () => {
@@ -21,31 +17,34 @@ const importData = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ Connected to cloud MongoDB');
 
+    // Get database collections directly (bypass Mongoose models)
+    const db = mongoose.connection.db;
+    
     // Clear existing data
-    await User.deleteMany({});
-    await Election.deleteMany({});
-    await Vote.deleteMany({});
-    await VoteRecord.deleteMany({});
+    await db.collection('users').deleteMany({});
+    await db.collection('elections').deleteMany({});
+    await db.collection('votes').deleteMany({});
+    await db.collection('voterecords').deleteMany({});
     console.log('🧹 Cleared existing data');
 
-    // Import data
+    // Import data directly to collections (bypass validation)
     if (exportData.users.length > 0) {
-      await User.insertMany(exportData.users);
+      await db.collection('users').insertMany(exportData.users);
       console.log(`✅ Imported ${exportData.users.length} users`);
     }
 
     if (exportData.elections.length > 0) {
-      await Election.insertMany(exportData.elections);
+      await db.collection('elections').insertMany(exportData.elections);
       console.log(`✅ Imported ${exportData.elections.length} elections`);
     }
 
     if (exportData.votes.length > 0) {
-      await Vote.insertMany(exportData.votes);
+      await db.collection('votes').insertMany(exportData.votes);
       console.log(`✅ Imported ${exportData.votes.length} votes`);
     }
 
     if (exportData.voteRecords.length > 0) {
-      await VoteRecord.insertMany(exportData.voteRecords);
+      await db.collection('voterecords').insertMany(exportData.voteRecords);
       console.log(`✅ Imported ${exportData.voteRecords.length} vote records`);
     }
 
