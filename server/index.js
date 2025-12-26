@@ -69,15 +69,6 @@ app.get('/test', (req, res) => {
   res.json({ message: 'Root server endpoint working!' });
 });
 
-// API-only mode - don't serve static files (Vercel handles them)
-app.get('/api/*', (req, res) => {
-  res.status(404).json({ 
-    message: 'API endpoint not found',
-    path: req.path,
-    availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/api/test']
-  });
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Server error:', err.stack);
@@ -92,6 +83,27 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : err.message,
     details: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
+});
+
+// Serve static files from React build (for Vercel deployment)
+const path = require('path');
+
+// Serve static files from the React app build directory
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Catch all handler: send back React's index.html file for non-API routes
+app.get('*', (req, res) => {
+  // Don't serve index.html for API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ 
+      message: 'API endpoint not found',
+      path: req.path,
+      availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/api/test']
+    });
+  }
+  
+  // Serve React app for all other routes
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
