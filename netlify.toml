@@ -1,24 +1,21 @@
 [build]
-  base = "client"
+  base = "."
   publish = "client/build"
-  command = "npm run build"
+  command = "npm run netlify-build"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
 
 [[redirects]]
   from = "/api/*"
-  to = "https://your-backend-url.herokuapp.com/api/:splat"
+  to = "/.netlify/functions/api/:splat"
   status = 200
-  force = true
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-[context.production.environment]
-  REACT_APP_API_URL = "https://your-backend-url.herokuapp.com"
-
-[context.deploy-preview.environment]
-  REACT_APP_API_URL = "https://your-backend-url.herokuapp.com"
+[functions]
+  node_bundler = "esbuild"
