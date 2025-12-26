@@ -13,6 +13,7 @@
     "start": "cd server && npm start",
     "seed": "cd server && npm run seed",
     "netlify-build": "npm install && cd server && npm install && cd ../client && npm install && npm run build",
+    "vercel-build": "npm install && cd server && npm install && cd ../client && npm install && npm run build",
     "postinstall": "cd server && npm install && cd ../client && npm install"
   },
   "dependencies": {
