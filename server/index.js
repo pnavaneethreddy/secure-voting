@@ -85,25 +85,34 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Serve static files from React build (for Vercel deployment)
-const path = require('path');
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    vercel: process.env.VERCEL ? 'true' : 'false'
+  });
+});
 
-// Serve static files from the React app build directory
-app.use(express.static(path.join(__dirname, '../client/build')));
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Server is working!' });
+});
 
-// Catch all handler: send back React's index.html file for non-API routes
-app.get('*', (req, res) => {
-  // Don't serve index.html for API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ 
-      message: 'API endpoint not found',
-      path: req.path,
-      availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/api/test']
-    });
-  }
-  
-  // Serve React app for all other routes
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+// Root endpoint for testing
+app.get('/test', (req, res) => {
+  res.json({ message: 'Root server endpoint working!' });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Error:', error);
+  res.status(500).json({ 
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+  });
 });
 
 const PORT = process.env.PORT || 5000;
