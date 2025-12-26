@@ -1,4 +1,5 @@
 # Setup Guide
+*Last updated: December 26, 2025*
 
 ## Quick Setup
 
